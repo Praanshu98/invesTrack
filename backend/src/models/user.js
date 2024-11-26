@@ -4,7 +4,7 @@ import { Model, DataTypes } from "sequelize";
 import bcrypt from "bcrypt";
 
 import sequelize from "../db_connect.js";
-import validatePassword from "../utils/validatePassword.js";
+import { validatePassword } from "../utils/validatePassword.js";
 
 class User extends Model {
   /**
@@ -22,6 +22,7 @@ User.init(
     lastName: DataTypes.STRING,
     email: DataTypes.STRING,
     password: DataTypes.STRING,
+    refreshToken: DataTypes.STRING,
   },
   {
     hooks: {

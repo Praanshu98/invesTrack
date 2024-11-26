@@ -1,5 +1,7 @@
 import jwt from "jsonwebtoken";
 
+import User from "../models/user.js";
+
 const generateRefreshToken = (user) => {
   const refreshToken = jwt.sign(
     { id: user.id },
@@ -23,9 +25,23 @@ const generateAccessToken = (user) => {
   return accessToken;
 };
 
-const generateAccessRefreshToken = (user) => {
+const generateAccessRefreshToken = async (user) => {
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);
+
+  console.log("user", user.id);
+
+  await User.update(
+    {
+      refreshToken: refreshToken,
+    },
+    {
+      where: {
+        id: user.id,
+      },
+    }
+  );
+
   return { accessToken, refreshToken };
 };
 

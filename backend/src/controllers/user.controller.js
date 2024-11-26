@@ -1,5 +1,7 @@
 // import User from "../models/user.models.js";
 import User from "../models/user.js";
+import { verifyPassword } from "../utils/validatePassword.js";
+import { generateAccessRefreshToken } from "../middlewares/auth.middleware.js";
 
 // Register User
 
@@ -45,4 +47,44 @@ const registerUser = async (req, res) => {
   return res.status(201).json({ message: "User created successfully" });
 };
 
-export { registerUser };
+const loginUser = async (req, res) => {
+  const { email, password } = req.body;
+
+  // Check if all fields are filled
+  if (!email || !password) {
+    return res.status(400).json({ message: "Please fill in all fields" });
+  }
+
+  // Check if user exists
+  const user = await User.findOne({ where: { email } });
+
+  if (!user) {
+    return res.status(400).json({ message: "User does not exist" });
+  }
+
+  // Check if password is correct
+  const isValidPassword = await verifyPassword(password, user.password);
+
+  if (!isValidPassword) {
+    return res.status(400).json({ message: "Invalid password" });
+  }
+
+  const { accessToken, refreshToken } = await generateAccessRefreshToken(user);
+
+  return res
+    .status(200)
+    .cookie("accessToken", accessToken)
+    .cookie("refreshToken", refreshToken)
+    .json({
+      message: "User logged in successfully",
+      accessToken,
+      refreshToken,
+      user: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+      },
+    });
+};
+
+export { registerUser, loginUser };
