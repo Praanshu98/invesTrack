@@ -1,4 +1,4 @@
-import dotenv from "./env.js";
+import "./src/utils/env.js";
 
 import app from "./src/app.js";
 

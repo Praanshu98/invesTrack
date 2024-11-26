@@ -12,7 +12,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // ROUTES
 // Route Imports
+import userRoutes from "./routes/user.routes.js";
 
 // Route Definitions
+app.use("/api/v1/users", userRoutes);
 
 export default app;
