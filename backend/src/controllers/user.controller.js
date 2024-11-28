@@ -47,9 +47,16 @@ const registerUser = async (req, res) => {
 
     return res.status(201).json({ message: "User created successfully" });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "Error registering user", error: error.message });
+    if (error.message === "Password validation failed.") {
+      return res.status(400).json({
+        message:
+          "Password must be 6-20 characters long, contain at least one digit, one uppercase letter, one lowercase letter, and one special character",
+      });
+    } else {
+      return res
+        .status(500)
+        .json({ message: "Error registering user", error: error.message });
+    }
   }
 };
 

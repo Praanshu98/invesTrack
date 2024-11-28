@@ -28,9 +28,7 @@ User.init(
     hooks: {
       beforeCreate: async (user) => {
         if (!validatePassword(user.password)) {
-          throw new Error(
-            "Password must be 6-20 characters long, contain at least one digit, one uppercase letter, one lowercase letter, and one special character"
-          );
+          throw new Error("Password validation failed.");
         } else {
           user.password = await bcrypt.hash(
             user.password,

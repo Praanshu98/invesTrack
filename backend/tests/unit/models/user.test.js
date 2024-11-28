@@ -7,15 +7,15 @@ import {
   beforeAll,
   afterAll,
 } from "vitest";
-import { sequelize } from "../../src/db_connect.js";
+import { sequelize } from "../../../src/db_connect.js";
 import bcrypt from "bcrypt";
 
-import { validatePassword } from "../../src/utils/validatePassword.js";
-import User from "../../src/models/user.js";
+import { validatePassword } from "../../../src/utils/validatePassword.js";
+import User from "../../../src/models/user.js";
 import { Sequelize } from "sequelize";
 
 vi.mock("bcrypt");
-vi.mock("../../src/utils/validatePassword.js");
+vi.mock("../../../src/utils/validatePassword.js");
 
 beforeAll(() => {
   sequelize = new Sequelize("sqlite::memory:");
