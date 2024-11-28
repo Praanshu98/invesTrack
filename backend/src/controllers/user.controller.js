@@ -1,6 +1,6 @@
 // import User from "../models/user.models.js";
 import User from "../models/user.js";
-import { verifyPassword } from "../utils/validatePassword.js";
+import { verifyPasswordHash } from "../utils/validatePassword.js";
 import { generateAccessRefreshToken } from "../middlewares/auth.middleware.js";
 
 // Register User
@@ -69,7 +69,7 @@ const loginUser = async (req, res) => {
   }
 
   // Check if password is correct
-  const isValidPassword = await verifyPassword(password, user.password);
+  const isValidPassword = await verifyPasswordHash(password, user.password);
 
   if (!isValidPassword) {
     return res.status(400).json({ message: "Invalid password" });

@@ -5,8 +5,8 @@ function validatePassword(password) {
   return regex.test(password);
 }
 
-function verifyPassword(password, hash) {
+function verifyPasswordHash(password, hash) {
   return bcrypt.compare(password, hash);
 }
 
-export { validatePassword, verifyPassword };
+export { validatePassword, verifyPasswordHash };
