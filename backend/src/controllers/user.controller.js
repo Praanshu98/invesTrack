@@ -93,6 +93,7 @@ const loginUser = async (req, res) => {
       accessToken,
       refreshToken,
       user: {
+        id: user.id,
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
@@ -100,4 +101,29 @@ const loginUser = async (req, res) => {
     });
 };
 
-export { registerUser, loginUser };
+const logoutUser = async (req, res) => {
+  const user = await User.findOne({
+    where: { refreshToken: req.cookies.refreshToken },
+  });
+
+  if (!user) {
+    return res.status(400).json({ message: "User does not exist" });
+  }
+  // Delete refresh token from database
+  await User.update(
+    {
+      refreshToken: null,
+    },
+    {
+      where: { id: user.id },
+    }
+  );
+
+  res
+    .status(200)
+    .clearCookie("accessToken")
+    .clearCookie("refreshToken")
+    .json({ message: "User logged out successfully" });
+};
+
+export { registerUser, loginUser, logoutUser };

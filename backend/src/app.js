@@ -1,4 +1,5 @@
 import express from "express";
+import cookieParser from "cookie-parser";
 
 // Server initialization
 const app = express();
@@ -6,6 +7,9 @@ const app = express();
 // MIDDLEWARES
 // For parsing application/json
 app.use(express.json());
+
+// For parsing cookies
+app.use(cookieParser());
 
 // For parsing application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
