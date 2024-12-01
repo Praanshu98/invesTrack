@@ -12,6 +12,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@prisma/client": "^6.0.0",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.7",
     "dotenv": "^16.4.5",
@@ -23,6 +24,7 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.7",
+    "prisma": "^6.0.0",
     "sequelize-cli": "^6.6.2",
     "sqlite3": "^5.1.7",
     "vitest": "^2.1.6"
