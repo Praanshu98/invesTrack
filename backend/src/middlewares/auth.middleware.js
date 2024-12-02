@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken";
-
-import User from "../models/user.js";
+import prisma from "../db_connect.js";
 
 const generateRefreshToken = (user) => {
   const refreshToken = jwt.sign(
@@ -29,18 +28,14 @@ const generateAccessRefreshToken = async (user) => {
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);
 
-  console.log("user", user.id);
-
-  await User.update(
-    {
+  await prisma.user.update({
+    where: {
+      id: user.id,
+    },
+    data: {
       refreshToken: refreshToken,
     },
-    {
-      where: {
-        id: user.id,
-      },
-    }
-  );
+  });
 
   return { accessToken, refreshToken };
 };
