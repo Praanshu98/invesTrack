@@ -18,17 +18,32 @@ model User {
   updatedAt    DateTime @default(now()) @updatedAt
 }
 
-model Schema {
-  id              Int               @id @default(autoincrement())
-  code            Int               @unique
-  isin            Int               @unique
-  name            String            @db.VarChar(255)
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @default(now()) @updatedAt
-  navs            NAV[]
-  schema_category Schema_Category[]
+// Scheme Name and ISIN code relation
+model Scheme {
+  id        Int      @id @default(autoincrement())
+  code      Int      @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  isin      ISIN[]
 }
 
+// ISIN code and relation with return_type, plan_type, NAV, scheme_code
+model ISIN {
+  id             Int         @id @default(autoincrement())
+  isin           Int         @unique
+  name           String
+  plan_type      Int
+  return_type    Int
+  scheme_id      Int
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @default(now()) @updatedAt
+  scheme_code    Scheme      @relation(fields: [scheme_id], references: [code])
+  plan_type_id   Plan_type   @relation(fields: [plan_type], references: [id])
+  return_type_id Return_Type @relation(fields: [return_type], references: [id])
+  nav            NAV[]
+}
+
+// All NAV for all ISINs
 model NAV {
   id               Int      @id @default(autoincrement())
   isin             Int
@@ -38,27 +53,23 @@ model NAV {
   sale_price       Int
   createdAt        DateTime @default(now())
   updatedAt        DateTime @default(now()) @updatedAt
-  isin_code        Schema   @relation(fields: [isin], references: [isin])
+  isin_id          ISIN     @relation(fields: [isin], references: [isin])
 }
 
+// Return type -> Growth, DividendPayout, DividendReinvestment
 model Return_Type {
-  id              Int               @id @default(autoincrement())
-  name            String            @db.VarChar(255)
-  schema_category Schema_Category[]
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  isin_id   ISIN[]
 }
 
+// Plan type -> Direct, Regular
 model Plan_type {
-  id              Int               @id @default(autoincrement())
-  name            String            @db.VarChar(255)
-  schema_category Schema_Category[]
-}
-
-model Schema_Category {
-  id             Int         @id @default(autoincrement())
-  code           Int
-  return_type    Int
-  plan_type      Int
-  schema_code    Schema      @relation(fields: [code], references: [code])
-  return_type_id Return_Type @relation(fields: [return_type], references: [id])
-  plan_type_id   Plan_type   @relation(fields: [plan_type], references: [id])
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  isin_id   ISIN[]
 }
