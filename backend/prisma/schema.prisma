@@ -30,7 +30,7 @@ model Scheme {
 // ISIN code and relation with return_type, plan_type, NAV, scheme_code
 model ISIN {
   id             Int         @id @default(autoincrement())
-  isin           Int         @unique
+  isin           String      @unique
   name           String
   plan_type      Int
   return_type    Int
@@ -39,14 +39,14 @@ model ISIN {
   updatedAt      DateTime    @default(now()) @updatedAt
   scheme_code    Scheme      @relation(fields: [scheme_id], references: [code])
   plan_type_id   Plan_type   @relation(fields: [plan_type], references: [id])
-  return_type_id Return_Type @relation(fields: [return_type], references: [id])
+  return_type_id Return_type @relation(fields: [return_type], references: [id])
   nav            NAV[]
 }
 
 // All NAV for all ISINs
 model NAV {
   id               Int      @id @default(autoincrement())
-  isin             Int
+  isin             String
   nav              Float
   date             DateTime
   repurchase_price Int
@@ -57,9 +57,9 @@ model NAV {
 }
 
 // Return type -> Growth, DividendPayout, DividendReinvestment
-model Return_Type {
+model Return_type {
   id        Int      @id @default(autoincrement())
-  name      String   @db.VarChar(255)
+  name      String   @unique @db.VarChar(255)
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
   isin_id   ISIN[]
@@ -68,7 +68,7 @@ model Return_Type {
 // Plan type -> Direct, Regular
 model Plan_type {
   id        Int      @id @default(autoincrement())
-  name      String   @db.VarChar(255)
+  name      String   @unique @db.VarChar(255)
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
   isin_id   ISIN[]
