@@ -48,12 +48,14 @@ model NAV {
   id               Int      @id @default(autoincrement())
   isin             String
   nav              Float
-  date             DateTime
-  repurchase_price Int
-  sale_price       Int
+  date             DateTime @db.Date
+  repurchase_price Int      @default(0)
+  sale_price       Int      @default(0)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @default(now()) @updatedAt
   isin_id          ISIN     @relation(fields: [isin], references: [isin])
+
+  @@unique([isin, date])
 }
 
 // Return type -> Growth, DividendPayout, DividendReinvestment
