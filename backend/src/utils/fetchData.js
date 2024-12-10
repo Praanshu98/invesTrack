@@ -1,45 +1,6 @@
 import fs from "fs";
 import csv from "csv-parser";
 
-const parseWeekDayDate = (date) => {
-  // If date is not passed set date to today
-  try {
-    if (!date) {
-      date = new Date();
-    }
-
-    // If day is Sunday or Monday, set date to a day or two prior respectively
-    const weekday = Intl.DateTimeFormat("en-US", {
-      weekday: "short",
-    }).format(date);
-
-    if (weekday === "Sun") {
-      date.setDate(date.getDate() - 1);
-    } else if (weekday === "Mon") {
-      date.setDate(date.getDate() - 2);
-    }
-
-    // Set date to a day prior since NAV's are available for the previous day
-    date.setDate(date.getDate() - 1);
-
-    // Adjust time offset to UTC
-    date.setTime(date.getTime() + date.getTimezoneOffset() * -1 * 60 * 1000);
-
-    const [month, day, year] = Intl.DateTimeFormat("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "2-digit",
-    })
-      .format(date)
-      .replace(",", "")
-      .split(" ");
-
-    return [day, month, year];
-  } catch (error) {
-    throw new Error(error);
-  }
-};
-
 const fetchData = async (date) => {
   try {
     const [day, month, year] = parseWeekDayDate(date);
