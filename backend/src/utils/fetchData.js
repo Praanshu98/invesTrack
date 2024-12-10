@@ -7,6 +7,7 @@ const parseWeekDayDate = (date) => {
     if (!date) {
       date = new Date();
     }
+
     // If day is Sunday or Monday, set date to a day or two prior respectively
     const weekday = Intl.DateTimeFormat("en-US", {
       weekday: "short",
@@ -20,11 +21,14 @@ const parseWeekDayDate = (date) => {
 
     // Set date to a day prior since NAV's are available for the previous day
     date.setDate(date.getDate() - 1);
+
+    // Adjust time offset to UTC
+    date.setTime(date.getTime() + date.getTimezoneOffset() * -1 * 60 * 1000);
+
     const [month, day, year] = Intl.DateTimeFormat("en-US", {
       year: "numeric",
       month: "short",
       day: "2-digit",
-      weekday: "short",
     })
       .format(date)
       .replace(",", "")
