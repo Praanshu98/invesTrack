@@ -3,6 +3,7 @@ import prisma from "../db_connect.js";
 import addNewISIN from "../utils/addNewMutualFund.js";
 import updateNAV from "../utils/nav.js";
 import fs from "fs";
+import { correctTimezoneOffset } from "../utils/formatDate.js";
 
 const updateMutualFundsList = async (req, res) => {
   try {
@@ -43,7 +44,8 @@ const updateLatestNAV = async (req, res) => {
 
     const [day, month, year] = parseWeekDayDate();
 
-    const latestDate = new Date([year, month, day].join("-"));
+    const latestDate = correctTimezoneOffset(new Date([year, month, day]));
+    console.log(latestDate);
 
     // Checking if today's nav is already updated
     const todayNAVExist = await prisma.NAV.findMany({
@@ -52,6 +54,7 @@ const updateLatestNAV = async (req, res) => {
       },
     });
 
+    console.log(todayNAVExist);
     if (todayNAVExist.length > 0) {
       return res.status(200).json({
         message: "Latest NAV are already updated",
@@ -66,26 +69,15 @@ const updateLatestNAV = async (req, res) => {
 
     // Parsing the fetched data
     const parsedCSVData = await parseCSV();
-    console.log("CSV parsed successfully");
-
-    console.log("parsedCSVData count", parsedCSVData.length);
 
     // Updating the NAV for each scheme
     for (let scheme of parsedCSVData) {
       // Check if ISIN exists in database, if not add new ISIN
 
-      console.log("Checking ISIN for ", scheme["Scheme Name"]);
-      console.log(
-        "ISIN Div Payout/ISIN Growth ",
-        scheme["ISIN Div Payout/ISIN Growth"],
-      );
-      console.log("ISIN Div Reinvestment ", scheme["ISIN Div Reinvestment"]);
-
       if (
         !scheme["ISIN Div Payout/ISIN Growth"] &&
         !scheme["ISIN Div Reinvestment"]
       ) {
-        console.log("ISIN not found for ", scheme["Scheme Name"]);
         continue;
       }
 
@@ -94,14 +86,12 @@ const updateLatestNAV = async (req, res) => {
           isin: scheme["ISIN Div Payout/ISIN Growth"],
         },
       });
-      console.log("isinPayoutExist ", isinPayoutExist);
 
       const isinReinvestExist = await prisma.ISIN.findUnique({
         where: {
           isin: scheme["ISIN Div Reinvestment"],
         },
       });
-      console.log("isinReinvestExist ", isinReinvestExist);
 
       if (!isinPayoutExist || !isinReinvestExist) {
         console.log(
@@ -112,8 +102,6 @@ const updateLatestNAV = async (req, res) => {
         );
         await addNewISIN(scheme);
       }
-
-      console.log("Updating NAV for ", scheme["Scheme Name"]);
 
       // Update NAV
       await updateNAV(scheme);

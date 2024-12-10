@@ -1,4 +1,5 @@
 import prisma from "../db_connect.js";
+import { correctTimezoneOffset } from "./formatDate.js";
 
 const updateNAV = async (schemeObject) => {
   try {
@@ -24,11 +25,8 @@ const updateNAV = async (schemeObject) => {
       throw new Error("NAV or Date not present");
     }
 
-    console.log("date ", date);
-
     // Parse date to a valid format
-    date = new Date();
-    date = new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
+    date = correctTimezoneOffset(date);
 
     // If ISIN of payout is present, update the NAV
     if (isinPayout) {
