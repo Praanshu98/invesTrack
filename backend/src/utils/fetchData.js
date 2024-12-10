@@ -89,4 +89,4 @@ const parseCSV = async (date) => {
   });
 };
 
-export { fetchData, parseCSV };
+export { fetchData, parseCSV, parseWeekDayDate };
