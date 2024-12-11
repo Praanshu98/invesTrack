@@ -1,4 +1,4 @@
-import { fetchData, parseCSV, parseWeekDayDate } from "../utils/fetchData.js";
+import { fetchData, parseCSV } from "../utils/fetchData.js";
 import prisma from "../db_connect.js";
 import addNewISIN from "../utils/addNewMutualFund.js";
 import updateNAV from "../utils/nav.js";

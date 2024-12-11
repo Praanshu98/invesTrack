@@ -50,4 +50,4 @@ const parseCSV = async (date) => {
   });
 };
 
-export { fetchData, parseCSV, parseWeekDayDate };
+export { fetchData, parseCSV };
