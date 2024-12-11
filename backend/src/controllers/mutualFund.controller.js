@@ -4,6 +4,7 @@ import addNewISIN from "../utils/addNewMutualFund.js";
 import updateNAV from "../utils/nav.js";
 import fs from "fs";
 import { correctTimezoneOffset } from "../utils/formatDate.js";
+import { parseWeekDayDate } from "../utils/formatDate.js";
 
 const updateMutualFundsList = async (req, res) => {
   try {

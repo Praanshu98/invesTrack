@@ -1,5 +1,6 @@
 import fs from "fs";
 import csv from "csv-parser";
+import { parseWeekDayDate } from "./formatDate.js";
 
 const fetchData = async (date) => {
   try {
