@@ -1,5 +1,6 @@
 import prisma from "../db_connect.js";
 import { correctTimezoneOffset } from "./formatDate.js";
+import { reformatISIN } from "./addNewMutualFund.js";
 
 const updateNAV = async (schemeObject) => {
   try {
@@ -7,6 +8,17 @@ const updateNAV = async (schemeObject) => {
     // If ISIN does not exist, throw error
     // If ISIN exists, update the latest NAV
     // Return with a success message
+
+    // Reformating ISIN to remove any non alphanumeric characters
+    schemeObject = {
+      ...schemeObject,
+      ["ISIN Div Payout/ISIN Growth"]: reformatISIN(
+        schemeObject["ISIN Div Payout/ISIN Growth"],
+      ),
+      ["ISIN Div Reinvestment"]: reformatISIN(
+        schemeObject["ISIN Div Reinvestment"],
+      ),
+    };
 
     const isinPayout = schemeObject["ISIN Div Payout/ISIN Growth"];
     const isinReinvest = schemeObject["ISIN Div Reinvestment"];
