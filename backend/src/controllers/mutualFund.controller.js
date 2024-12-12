@@ -1,6 +1,6 @@
 import { fetchData, parseCSV } from "../utils/fetchData.js";
 import prisma from "../db_connect.js";
-import addNewISIN from "../utils/addNewMutualFund.js";
+import addNewISIN, { reformatISIN } from "../utils/addNewMutualFund.js";
 import updateNAV from "../utils/nav.js";
 import fs from "fs";
 import { correctTimezoneOffset } from "../utils/formatDate.js";
@@ -46,7 +46,6 @@ const updateLatestNAV = async (req, res) => {
     const [day, month, year] = parseWeekDayDate();
 
     const latestDate = correctTimezoneOffset(new Date([year, month, day]));
-    console.log(latestDate);
 
     // Checking if today's nav is already updated
     const todayNAVExist = await prisma.NAV.findMany({
@@ -55,7 +54,6 @@ const updateLatestNAV = async (req, res) => {
       },
     });
 
-    console.log(todayNAVExist);
     if (todayNAVExist.length > 0) {
       return res.status(200).json({
         message: "Latest NAV are already updated",
@@ -73,8 +71,18 @@ const updateLatestNAV = async (req, res) => {
 
     // Updating the NAV for each scheme
     for (let scheme of parsedCSVData) {
-      // Check if ISIN exists in database, if not add new ISIN
+      // Reformating ISIN to remove any non alphanumeric characters
+      scheme = {
+        ...scheme,
+        ["ISIN Div Payout/ISIN Growth"]: reformatISIN(
+          scheme["ISIN Div Payout/ISIN Growth"],
+        ),
+        ["ISIN Div Reinvestment"]: reformatISIN(
+          scheme["ISIN Div Reinvestment"],
+        ),
+      };
 
+      // Check if ISIN exists in database, if not add new ISIN
       if (
         !scheme["ISIN Div Payout/ISIN Growth"] &&
         !scheme["ISIN Div Reinvestment"]
@@ -94,13 +102,10 @@ const updateLatestNAV = async (req, res) => {
         },
       });
 
-      if (!isinPayoutExist || !isinReinvestExist) {
-        console.log(
-          "Adding new ISIN ",
-          scheme["ISIN Div Payout/ISIN Growth"]
-            ? scheme["ISIN Div Payout/ISIN Growth"]
-            : scheme["ISIN Div Reinvestment"],
-        );
+      if (
+        (!isinPayoutExist && scheme["ISIN Div Payout/ISIN Growth"] != "") ||
+        (!isinReinvestExist && scheme["ISIN Div Reinvestment"] != "")
+      ) {
         await addNewISIN(scheme);
       }
 

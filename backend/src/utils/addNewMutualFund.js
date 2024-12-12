@@ -5,6 +5,17 @@ const addNewISIN = async (schemeObject) => {
     // Check if ISIN exists in database
     let ISINPayout, ISINReinvest;
 
+    // Reformating ISIN to remove any non alphanumeric characters
+    schemeObject = {
+      ...schemeObject,
+      ["ISIN Div Payout/ISIN Growth"]: reformatISIN(
+        schemeObject["ISIN Div Payout/ISIN Growth"],
+      ),
+      ["ISIN Div Reinvestment"]: reformatISIN(
+        schemeObject["ISIN Div Reinvestment"],
+      ),
+    };
+
     schemeObject["ISIN Div Payout/ISIN Growth"] != ""
       ? (ISINPayout = await prisma.ISIN.findUnique({
           where: {
@@ -173,5 +184,11 @@ const getScheme = async (schemeCodeInput) => {
   }
 };
 
+const reformatISIN = (isinInput) => {
+  const regex = new RegExp("^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9]+$");
+
+  return regex.test(isinInput) ? isinInput : "";
+};
+
 export default addNewISIN;
-export { getScheme, getReturnType, getPlanType };
+export { getScheme, getReturnType, getPlanType, reformatISIN };
