@@ -1,8 +1,10 @@
 import express from "express";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 
 // Server initialization
 const app = express();
+app.use(cors());
 
 // MIDDLEWARES
 // For parsing application/json
