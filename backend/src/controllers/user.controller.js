@@ -38,7 +38,7 @@ const registerUser = async (req, res) => {
     // Hash password
     const hashedPassword = await bcrypt.hash(
       password,
-      Number(process.env.SALT_PASSWORD)
+      Number(process.env.SALT_PASSWORD),
     );
 
     // Create user
@@ -51,8 +51,17 @@ const registerUser = async (req, res) => {
       },
     });
 
+    // Format user object without sensitive information
+    delete user.password;
+    delete user.refreshToken;
+    delete user.createdAt;
+    delete user.updatedAt;
+
     // Return response
-    return res.status(201).json({ message: "User created successfully" });
+    return res.status(201).json({
+      message: "User created successfully",
+      user,
+    });
   } catch (error) {
     return res
       .status(500)
@@ -83,9 +92,8 @@ const loginUser = async (req, res) => {
       return res.status(400).json({ message: "Invalid password" });
     }
 
-    const { accessToken, refreshToken } = await generateAccessRefreshToken(
-      user
-    );
+    const { accessToken, refreshToken } =
+      await generateAccessRefreshToken(user);
 
     return res
       .status(200)
