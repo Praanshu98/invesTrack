@@ -5,6 +5,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home.jsx";
 import NavBar from "./components/NavBar.jsx";
 import SignUp from "./pages/SignUp.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
+
+import UserProvider from "./context/userContext.jsx";
 
 import "./index.css";
 
@@ -13,10 +16,13 @@ const App = () => {
     <StrictMode>
       <BrowserRouter>
         <NavBar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/signup" element={<SignUp />} />
-        </Routes>
+        <UserProvider>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Routes>
+        </UserProvider>
       </BrowserRouter>
     </StrictMode>
   );
