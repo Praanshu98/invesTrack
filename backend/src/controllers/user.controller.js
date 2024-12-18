@@ -101,13 +101,13 @@ const loginUser = async (req, res) => {
       .cookie("refreshToken", refreshToken)
       .json({
         message: "User logged in successfully",
-        accessToken,
-        refreshToken,
         user: {
           id: user.id,
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
+          accessToken,
+          refreshToken,
         },
       });
   } catch (error) {
