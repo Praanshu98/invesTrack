@@ -6,6 +6,7 @@ import Home from "./pages/Home.jsx";
 import NavBar from "./components/NavBar.jsx";
 import SignUp from "./pages/SignUp.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
+import Login from "./pages/Login.jsx";
 
 import UserProvider from "./context/userContext.jsx";
 
@@ -21,6 +22,7 @@ const App = () => {
             <Route path="/" element={<Home />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/login" element={<Login />} />
           </Routes>
         </UserProvider>
       </BrowserRouter>

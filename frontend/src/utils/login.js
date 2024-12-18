@@ -1,5 +1,5 @@
-const login = async (user) => {
-  const { email, password } = user;
+const login = async ({ email, password }) => {
+  // Try to log in the user
   const response = await fetch("/api/v1/users/login", {
     method: "POST",
     headers: {
@@ -10,6 +10,7 @@ const login = async (user) => {
       password,
     }),
   });
+
   return response;
 };
 

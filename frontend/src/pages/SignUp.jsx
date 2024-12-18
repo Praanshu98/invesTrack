@@ -37,6 +37,14 @@ const SignUpComponent = () => {
         </div>
         <CustomButton customValue="Sign Up" customType="submit" />
       </form>
+      <div className="flex text-sm">
+        <p>Already have an account?</p>
+        <CustomButton
+          customValue="Log in"
+          onClick={() => navigate("/login")}
+          className="underline pl-2 bg-transparent border-0 p-0 m-0 text-default"
+        />
+      </div>{" "}
     </div>
   );
 };
