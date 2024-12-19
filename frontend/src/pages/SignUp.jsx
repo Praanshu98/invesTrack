@@ -44,7 +44,7 @@ const SignUpComponent = () => {
           onClick={() => navigate("/login")}
           className="!m-0 !p-0 !border-0 !pl-2 bg-transparent underline text-default"
         />
-      </div>{" "}
+      </div>
     </div>
   );
 };
