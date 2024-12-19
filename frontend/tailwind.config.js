@@ -15,7 +15,7 @@ export default {
         "purssian-blue-600": "#002945",
         "purssian-blue-700": "#00253E",
         "purssian-blue-800": "#002137",
-        "focus-border": "#0073e6",
+        "dark-washed-azure": "#0073e6",
       },
     },
   },

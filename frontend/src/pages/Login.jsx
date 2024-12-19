@@ -32,12 +32,12 @@ const LoginComponent = () => {
         </div>
         <CustomButton customValue="Login" customType="submit" />
       </form>
-      <div className="flex text-sm">
+      <div className="flex text-sm items-center">
         <p className="text-xs">Don't have an account? </p>
         <CustomButton
           customValue="Sign up"
           onClick={() => navigate("/signup")}
-          className="!m-0 !p-0 !border-0 !pl-2 bg-transparent underline text-default text-xs"
+          className="!m-0 !p-0 !border-0 !pl-2 bg-transparent underline text-blue-400 text-sm font-bold"
         />
       </div>
     </div>
