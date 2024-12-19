@@ -42,7 +42,7 @@ const SignUpComponent = () => {
         <CustomButton
           customValue="Log in"
           onClick={() => navigate("/login")}
-          className="underline pl-2 bg-transparent border-0 p-0 m-0 text-default"
+          className="!m-0 !p-0 !border-0 !pl-2 bg-transparent underline text-default"
         />
       </div>{" "}
     </div>
