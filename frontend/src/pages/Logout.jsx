@@ -10,7 +10,6 @@ const Logout = () => {
 
   useEffect(() => {
     const performLogout = async () => {
-      console.log("Logout");
       const response = await logout();
 
       if (response.status === 200) {

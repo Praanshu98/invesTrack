@@ -39,7 +39,7 @@ const LoginComponent = () => {
         <CustomButton customValue="Login" customType="submit" />
       </form>
       <div className="flex text-sm items-center">
-        <p className="text-xs">Don't have an account? </p>
+        <p className="text-xs">Don&apos;t have an account? </p>
         <CustomButton
           customValue="Sign up"
           onClick={() => navigate("/signup")}
