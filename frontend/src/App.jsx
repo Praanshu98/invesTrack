@@ -7,6 +7,7 @@ import NavBar from "./components/NavBar.jsx";
 import SignUp from "./pages/SignUp.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Login from "./pages/Login.jsx";
+import Logout from "./pages/Logout.jsx";
 
 import UserProvider from "./context/userContext.jsx";
 
@@ -16,13 +17,14 @@ const App = () => {
   return (
     <StrictMode>
       <BrowserRouter>
-        <NavBar />
         <UserProvider>
+          <NavBar />
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/logout" element={<Logout />} />
           </Routes>
         </UserProvider>
       </BrowserRouter>
