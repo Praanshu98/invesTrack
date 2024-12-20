@@ -27,7 +27,10 @@ const validateAndLogin = async (event, setUser, navigate, setError) => {
 
     if (response.status === 200) {
       const user = await response.json();
-      setUser(user.user);
+      setUser({
+        isLoggedIn: true,
+        ...user.user,
+      });
       navigate("/dashboard");
     }
   } catch (error) {

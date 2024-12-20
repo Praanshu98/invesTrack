@@ -43,7 +43,10 @@ const validateAndSignUp = async (event, setUser, navigate, setError) => {
       if (loginUserResponse.status === 200) {
         // If the user was logged in successfully, set the user in the context
         const user = await loginUserResponse.json();
-        setUser(user.user);
+        setUser({
+          isLoggedIn: true,
+          ...user.user,
+        });
 
         // Redirect to the dashboard
         navigate("/dashboard");
