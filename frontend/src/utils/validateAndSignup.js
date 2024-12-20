@@ -3,10 +3,9 @@ import login from "../utils/login";
 
 import { validatePassword } from "./validation";
 
-const validateAndSignUp = async (event, setUser, navigate) => {
+const validateAndSignUp = async (event, setUser, navigate, setError) => {
   try {
     event.preventDefault();
-    document.getElementById("signup-error").classList.add("hidden");
 
     const firstName = event.target.firstName.value;
     const lastName = event.target.lastName.value;
@@ -52,9 +51,7 @@ const validateAndSignUp = async (event, setUser, navigate) => {
       }
     }
   } catch (error) {
-    console.error("Error in validateAndSignUp", error);
-    document.getElementById("signup-error").classList.remove("hidden");
-    document.getElementById("signup-error").textContent = error.message;
+    setError(error.message);
   }
 };
 

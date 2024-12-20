@@ -1,8 +1,7 @@
 import login from "../utils/login";
-
 import { validatePassword } from "./validation";
 
-const validateAndLogin = async (event, setUser, navigate) => {
+const validateAndLogin = async (event, setUser, navigate, setError) => {
   try {
     event.preventDefault();
 
@@ -29,8 +28,7 @@ const validateAndLogin = async (event, setUser, navigate) => {
       navigate("/dashboard");
     }
   } catch (error) {
-    document.getElementById("login-error").classList.remove("hidden");
-    document.getElementById("login-error").textContent = error.message;
+    setError(error.message);
   }
 };
 

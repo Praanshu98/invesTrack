@@ -2,10 +2,12 @@ import CustomButton from "../components/customButtons";
 import CustomTextInput from "../components/customTextInput";
 import { useUserContext } from "../context/userContext";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 import validateAndLogin from "../utils/validateAndLogin";
 
 const LoginComponent = () => {
+  const [error, setError] = useState(null);
   const { setUser } = useUserContext();
   const navigate = useNavigate();
 
@@ -15,7 +17,9 @@ const LoginComponent = () => {
       <form
         className="flex flex-col w-64"
         action="/api/v1/users/login"
-        onSubmit={(event) => validateAndLogin(event, setUser, navigate)}
+        onSubmit={(event) =>
+          validateAndLogin(event, setUser, navigate, setError)
+        }
         method="POST"
       >
         <CustomTextInput placeholderText="Email" inputType="email" id="email" />
@@ -26,9 +30,11 @@ const LoginComponent = () => {
             id="password"
             classNameText="mb-0.5"
           />
-          <p className="ml-2 pl-2 text-xs text-red-500 hidden" id="login-error">
-            Problem in Password
-          </p>
+          {error && (
+            <p className="ml-2 pl-2 text-xs text-red-500" id="login-error">
+              {error}
+            </p>
+          )}
         </div>
         <CustomButton customValue="Login" customType="submit" />
       </form>
