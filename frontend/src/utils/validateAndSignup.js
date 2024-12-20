@@ -1,7 +1,7 @@
 import signUp from "../utils/signUp";
 import login from "../utils/login";
-
 import { validatePassword } from "./validation";
+import { throwNew500Error, throwNewPasswordError } from "./handleError";
 
 const validateAndSignUp = async (event, setUser, navigate, setError) => {
   try {
@@ -12,11 +12,14 @@ const validateAndSignUp = async (event, setUser, navigate, setError) => {
     const email = event.target.email.value;
     const password = event.target.password.value;
 
+    // Check if all the fields are filled
+    if (!firstName || !lastName || !email || !password) {
+      throw new Error("Please fill in all fields.");
+    }
+
     // Check if the password is valid
     if (!validatePassword(password)) {
-      throw new Error(
-        "Password must be between 6 to 20 characters which contain at least one numeric digit, one uppercase and one lowercase letter, and one special character."
-      );
+      throwNewPasswordError();
     }
 
     // Try to create a user
@@ -26,6 +29,11 @@ const validateAndSignUp = async (event, setUser, navigate, setError) => {
       // If there was an error, show the error
       const error = await response.json();
       throw new Error(error.message);
+    }
+
+    if (response.status === 500) {
+      // If there was an error, show the error
+      throwNew500Error();
     }
 
     if (response.status === 201) {
@@ -41,13 +49,14 @@ const validateAndSignUp = async (event, setUser, navigate, setError) => {
         navigate("/dashboard");
       }
 
-      if (
-        loginUserResponse.status === 400 ||
-        loginUserResponse.status === 500
-      ) {
+      if (loginUserResponse.status === 400) {
         // If there was an error, show the error
         const error = await loginUserResponse.json();
         throw new Error(error.message);
+      }
+      if (response.status === 500) {
+        // If there was an error, show the error
+        throwNew500Error();
       }
     }
   } catch (error) {

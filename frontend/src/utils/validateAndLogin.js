@@ -1,5 +1,6 @@
 import login from "../utils/login";
 import { validatePassword } from "./validation";
+import { throwNew500Error, throwNewPasswordError } from "./handleError";
 
 const validateAndLogin = async (event, setUser, navigate, setError) => {
   try {
@@ -10,16 +11,18 @@ const validateAndLogin = async (event, setUser, navigate, setError) => {
 
     // Check if the password is valid
     if (!validatePassword(password)) {
-      throw new Error(
-        "Password must be between 6 to 20 characters which contain at least one numeric digit, one uppercase and one lowercase letter, and one special character."
-      );
+      throwNewPasswordError();
     }
 
     // Try to log in the user
     const response = await login({ email, password });
-    if (response.status === 400 || response.status === 500) {
+    if (response.status === 400) {
       const error = await response.json();
       throw new Error(error.message);
+    }
+
+    if (response.status === 500) {
+      throwNew500Error();
     }
 
     if (response.status === 200) {
