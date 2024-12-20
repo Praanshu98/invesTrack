@@ -1,12 +1,10 @@
-const logout = async (navigate) => {
+const logout = async () => {
   // Try to log out the user
   const response = await fetch("/api/v1/users/logout", {
     method: "POST",
   });
 
-  if (response.status === 200) {
-    navigate("/login");
-  }
+  return response;
 };
 
 export default logout;
