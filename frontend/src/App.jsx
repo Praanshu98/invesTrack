@@ -1,4 +1,3 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -10,25 +9,26 @@ import Login from "./pages/Login.jsx";
 import Logout from "./pages/Logout.jsx";
 
 import UserProvider from "./context/userContext.jsx";
+import ProtectedRoutes from "./components/ProtectedRoutes.jsx";
 
 import "./index.css";
 
 const App = () => {
   return (
-    <StrictMode>
-      <BrowserRouter>
-        <UserProvider>
-          <NavBar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/signup" element={<SignUp />} />
+    <BrowserRouter>
+      <UserProvider>
+        <NavBar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/logout" element={<Logout />} />
+          <Route element={<ProtectedRoutes />}>
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/logout" element={<Logout />} />
-          </Routes>
-        </UserProvider>
-      </BrowserRouter>
-    </StrictMode>
+          </Route>
+        </Routes>
+      </UserProvider>
+    </BrowserRouter>
   );
 };
 
