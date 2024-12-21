@@ -13,7 +13,7 @@ const Logout = () => {
       const response = await logout();
 
       if (response.status === 200) {
-        setUser({ isLoggedIn: false });
+        setUser(null);
         navigate("/");
       }
     };
