@@ -35,15 +35,28 @@ const updateMutualFundsList = async (req, res) => {
 
 const updateLatestNAV = async (req, res) => {
   try {
-    // 1. Check if today's NAV is already updated, if yes return with message
-    // 2. If not, fetch today's mutual fund NAV data
-    // 3. For all the scheme object in the data
-    // 4. Check if the ISIN exists in the database
-    // 5. If it does, update the latest NAV
-    // 6. If not, add the ISIN to the database and update the latest NAV
-    // 7. Return with a success message try {
+    // Steps:
+    //  Parse the date from the query params
+    //  If date is not passed, set date to today
+    //  Check if today's NAV is already updated, if yes return with message
+    //  If not, fetch today's mutual fund NAV data
+    //  For all the scheme object in the data
+    //  Check if the ISIN exists in the database
+    //  If it does, update the latest NAV
+    //  If not, add the ISIN to the database and update the latest NAV
+    //  Return with a success message try {
 
-    const [day, month, year] = parseWeekDayDate();
+    const { date: inputDate, month: inputMonth, year: inputYear } = req.query;
+
+    let day, month, year;
+
+    if (inputDate && inputMonth && inputYear) {
+      [day, month, year] = parseWeekDayDate(
+        new Date([inputYear, inputMonth, inputDate]),
+      );
+    } else {
+      [day, month, year] = parseWeekDayDate();
+    }
 
     const latestDate = correctTimezoneOffset(new Date([year, month, day]));
 
@@ -63,11 +76,11 @@ const updateLatestNAV = async (req, res) => {
 
     // Checking if latest mutual fund data is fetched or not.
     if (!fs.existsSync(`temp/${day}_${month}_${year}.csv`)) {
-      await fetchData();
+      await fetchData([year, month, Number(day) + 1]);
     }
 
     // Parsing the fetched data
-    const parsedCSVData = await parseCSV();
+    const parsedCSVData = await parseCSV([year, month, Number(day) + 1]);
 
     // Updating the NAV for each scheme
     for (let scheme of parsedCSVData) {

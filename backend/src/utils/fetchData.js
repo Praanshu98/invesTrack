@@ -4,8 +4,12 @@ import { parseWeekDayDate } from "./formatDate.js";
 
 const fetchData = async (date) => {
   try {
-    const [day, month, year] = parseWeekDayDate(date);
-
+    let day, month, year;
+    if (!date) {
+      [day, month, year] = parseWeekDayDate();
+    } else {
+      [day, month, year] = parseWeekDayDate(new Date(date));
+    }
     // Check if file exists (ie, data has already been fetched)
     if (fs.existsSync(`temp/${day}_${month}_${year}.csv`)) {
       return;
@@ -26,7 +30,12 @@ const fetchData = async (date) => {
 const parseCSV = async (date) => {
   return new Promise((resolve, rejects) => {
     try {
-      const [day, month, year] = parseWeekDayDate(date);
+      let day, month, year;
+      if (!date) {
+        [day, month, year] = parseWeekDayDate();
+      } else {
+        [day, month, year] = parseWeekDayDate(new Date(date));
+      }
       const csvData = [];
 
       // Parse CSV file
