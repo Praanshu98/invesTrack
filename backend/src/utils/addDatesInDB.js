@@ -10,7 +10,7 @@ for (let year = 2007; year <= 2024; year++) {
       const date = parseWeekDayDate(new Date([year, month, Number(day) + 1]));
       dataToFetch.push(date.join("-"));
 
-      const createdDate = await prisma.Date_Scrapped.upsert({
+      const createdDate = await prisma.date_scrapped.upsert({
         where: {
           date: correctTimezoneOffset(new Date(date)),
         },
