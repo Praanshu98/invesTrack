@@ -18,7 +18,6 @@ model User {
   updatedAt    DateTime @default(now()) @updatedAt
 }
 
-// Scheme Name and ISIN code relation
 model Scheme {
   id        Int      @id @default(autoincrement())
   code      Int      @unique
@@ -27,7 +26,6 @@ model Scheme {
   isin      ISIN[]
 }
 
-// ISIN code and relation with return_type, plan_type, NAV, scheme_code
 model ISIN {
   id             Int         @id @default(autoincrement())
   isin           String      @unique
@@ -43,7 +41,6 @@ model ISIN {
   nav            NAV[]
 }
 
-// All NAV for all ISINs
 model NAV {
   id               Int      @id @default(autoincrement())
   isin             String
@@ -58,7 +55,6 @@ model NAV {
   @@unique([isin, date])
 }
 
-// Return type -> Growth, DividendPayout, DividendReinvestment
 model Return_type {
   id        Int      @id @default(autoincrement())
   name      String   @unique @db.VarChar(255)
@@ -67,11 +63,18 @@ model Return_type {
   isin_id   ISIN[]
 }
 
-// Plan type -> Direct, Regular
 model Plan_type {
   id        Int      @id @default(autoincrement())
   name      String   @unique @db.VarChar(255)
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
   isin_id   ISIN[]
+}
+
+model Date_Scrapped {
+  id        Int      @id @default(autoincrement())
+  date      DateTime @unique @db.Date
+  status    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
