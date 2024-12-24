@@ -2,14 +2,10 @@ import fs from "fs";
 import csv from "csv-parser";
 import { parseWeekDayDate } from "./formatDate.js";
 
-const fetchData = async (date) => {
+const fetchData = async (date = new Date()) => {
+  // Data is always fetched for the previous day
   try {
-    let day, month, year;
-    if (!date) {
-      [day, month, year] = parseWeekDayDate();
-    } else {
-      [day, month, year] = parseWeekDayDate(new Date(date));
-    }
+    const [day, month, year] = parseWeekDayDate(new Date(date));
     // Check if file exists (ie, data has already been fetched)
     if (fs.existsSync(`temp/${day}_${month}_${year}.csv`)) {
       return;
@@ -27,15 +23,10 @@ const fetchData = async (date) => {
   }
 };
 
-const parseCSV = async (date) => {
+const parseCSV = async (date = new Date()) => {
   return new Promise((resolve, rejects) => {
     try {
-      let day, month, year;
-      if (!date) {
-        [day, month, year] = parseWeekDayDate();
-      } else {
-        [day, month, year] = parseWeekDayDate(new Date(date));
-      }
+      const [day, month, year] = parseWeekDayDate(new Date(date));
       const csvData = [];
 
       // Parse CSV file

@@ -1,11 +1,6 @@
 // Function to parse the date and return the latest date for which NAV could be fetched
-const parseWeekDayDate = (date) => {
-  // If date is not passed set date to today
+const parseWeekDayDate = (date = new Date()) => {
   try {
-    if (!date) {
-      date = new Date();
-    }
-
     // If day is Sunday or Monday, set date to a day or two prior respectively
     const weekday = Intl.DateTimeFormat("en-US", {
       weekday: "short",
@@ -34,6 +29,7 @@ const parseWeekDayDate = (date) => {
 
     return [day, month, year];
   } catch (error) {
+    console.log(`========== Error parsing date ==========`);
     throw new Error(error);
   }
 };
