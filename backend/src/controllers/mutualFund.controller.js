@@ -48,22 +48,27 @@ const updateLatestNAV = async (req, res) => {
 
     const { date: inputDate, month: inputMonth, year: inputYear } = req.query;
 
-    let day, month, year;
+    let day, month, year, newDate;
 
     if (inputDate && inputMonth && inputYear) {
       [day, month, year] = parseWeekDayDate(
         new Date([inputYear, inputMonth, inputDate]),
       );
+      newDate = correctTimezoneOffset(
+        new Date(
+          new Date([year, month, day]).setDate(
+            new Date([year, month, day]).getDate() + 1,
+          ),
+        ),
+      );
     } else {
       [day, month, year] = parseWeekDayDate();
     }
 
-    const latestDate = correctTimezoneOffset(new Date([year, month, day]));
-
     // Checking if today's nav is already updated
     const todayNAVExist = await prisma.NAV.findMany({
       where: {
-        date: latestDate,
+        date: correctTimezoneOffset(new Date([year, month, day])),
       },
     });
 
@@ -75,12 +80,13 @@ const updateLatestNAV = async (req, res) => {
     }
 
     // Checking if latest mutual fund data is fetched or not.
+
     if (!fs.existsSync(`temp/${day}_${month}_${year}.csv`)) {
-      await fetchData([year, month, Number(day) + 1]);
+      await fetchData(newDate);
     }
 
     // Parsing the fetched data
-    const parsedCSVData = await parseCSV([year, month, Number(day) + 1]);
+    const parsedCSVData = await parseCSV(newDate);
 
     // Updating the NAV for each scheme
     for (let scheme of parsedCSVData) {
