@@ -16,10 +16,19 @@ const addPreviousDates = async () => {
 
     console.log(toUpdateDate[0]);
 
-    const [date, month, year] = parseWeekDayDate(toUpdateDate[0].date);
+    const [date, month, year] = Intl.DateTimeFormat("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+    })
+      .format(toUpdateDate[0].date)
+      .replace(",", "")
+      .split(" ");
+
+    console.log(date, month, year);
 
     const response = await fetch(
-      `http://localhost:3000/api/v1/mutualfund/admin/update-latest-nav?date=${Number(date) + 1}&month=${month}&year=${year}`,
+      `http://localhost:3000/api/v1/mutualfund/admin/update-latest-nav?date=${date}&month=${month}&year=${year}`,
     );
 
     console.log(response);
@@ -39,8 +48,8 @@ const addPreviousDates = async () => {
   }
 };
 
-// addPreviousDates();
+addPreviousDates();
 
-for (let i = 0; i < 10; i++) {
-  await addPreviousDates();
-}
+// for (let i = 0; i < 10; i++) {
+//   await addPreviousDates();
+// }
