@@ -71,7 +71,7 @@ model Plan_type {
   isin_id   ISIN[]
 }
 
-model date_scrapped {
+model Date_scrapped {
   id        Int      @id @default(autoincrement())
   date      DateTime @unique @db.Date
   status    Boolean  @default(false)
