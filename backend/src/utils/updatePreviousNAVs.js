@@ -3,7 +3,7 @@ import { parseWeekDayDate } from "./formatDate.js";
 
 const addPreviousDates = async () => {
   try {
-    const toUpdateDate = await prisma.date_Scrapped.findMany({
+    const toUpdateDate = await prisma.date_scrapped.findMany({
       where: {
         status: false,
       },
@@ -25,7 +25,7 @@ const addPreviousDates = async () => {
     console.log(response);
 
     if (response.status === 200) {
-      await prisma.date_Scrapped.update({
+      await prisma.date_scrapped.update({
         where: {
           id: toUpdateDate[0].id,
         },
