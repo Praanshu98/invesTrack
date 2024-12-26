@@ -20,9 +20,11 @@ app.use(express.urlencoded({ extended: true }));
 // Route Imports
 import userRoutes from "./routes/user.routes.js";
 import mutualFundRoutes from "./routes/mutualFund.routes.js";
+import investmentRoutes from "./routes/investment.routes.js";
 
 // Route Definitions
 app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/users/investment", investmentRoutes);
 app.use("/api/v1/mutualfund", mutualFundRoutes);
 
 export default app;
