@@ -271,4 +271,78 @@ const sellMutualFund = async (req, res) => {
   }
 };
 
-export { buyMutualFund, sellMutualFund };
+/*
+
+Expected functionality:
+- Get all investments of the user
+- Return a list of all the investments of the user.
+
+*/
+
+const getAllInvestment = async (req, res) => {
+  const { userId } = req.body;
+
+  // Check if all required fields are provided
+  if (!userId) {
+    return res.status(400).json({
+      message: "Please provide all the required fields",
+    });
+  }
+
+  // Check if the user exists
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
+  if (!user) {
+    return res.status(404).json({
+      message: "User not found",
+    });
+  }
+
+  // Get all investments of the user
+  const investments = await prisma.investments.groupBy({
+    by: ["isin_id"],
+    where: {
+      user_id: userId,
+    },
+    _sum: {
+      units: true,
+    },
+  });
+
+  // List out all the user investments
+  let userInvestments = [];
+
+  for (const investment of investments) {
+    let latestNAV = await prisma.nAV.findMany({
+      where: {
+        isin_id: {
+          id: investment.isin_id,
+        },
+      },
+      orderBy: {
+        date: "desc",
+      },
+      include: {
+        isin_id: true,
+      },
+      take: 1,
+    });
+
+    userInvestments.push({
+      name: latestNAV[0].isin_id.name,
+      units: Math.round(investment._sum.units),
+      nav: Math.round(latestNAV[0].nav),
+      value: Math.round(investment._sum.units * latestNAV[0].nav),
+    });
+  }
+
+  return res.status(200).json({
+    userInvestments,
+  });
+};
+
+export { buyMutualFund, sellMutualFund, getAllInvestment };
