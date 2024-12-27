@@ -2,7 +2,7 @@ import "../db_connect.js";
 import prisma from "../db_connect.js";
 import { correctTimezoneOffset } from "../utils/formatDate.js";
 
-const invest = async (req, res) => {
+const buyMutualFund = async (req, res) => {
   try {
     let { units } = req.body;
     const { userId, isinId, purchaseDate, amount } = req.body;
@@ -122,4 +122,125 @@ const invest = async (req, res) => {
   }
 };
 
-export { invest };
+const sellMutualFund = async (req, res) => {
+  try {
+    let { units } = req.body;
+    const { userId, isinId, saleDate, amount } = req.body;
+
+    // Check if all required fields are provided
+    if (!userId || !isinId || !saleDate || (!units && !amount)) {
+      return res.status(400).json({
+        message: " Please provide all the required fields",
+      });
+    }
+
+    // If units and amount both are provided return an error
+    if (units && amount) {
+      return res.status(400).json({
+        message: "Please provide either units or amount",
+      });
+    }
+
+    // Check if purchase date is not in future
+    if (new Date(saleDate) > new Date()) {
+      return res.status(400).json({
+        message: "Sell date cannot be in the future",
+      });
+    }
+
+    // Check if units is a positive number
+    if (units <= 0) {
+      return res.status(400).json({
+        message: "Units should be a positive number",
+      });
+    }
+
+    // Check if amount is a positive number
+    if (amount && amount <= 0) {
+      return res.status(400).json({
+        message: "Amount should be a positive number",
+      });
+    }
+
+    // Format the purchase date
+    let updateSellDate = correctTimezoneOffset(saleDate);
+
+    // Check if the user exists
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    // Check if the isin exists
+    const isin = await prisma.iSIN.findUnique({
+      where: {
+        isin: isinId,
+      },
+    });
+
+    if (!isin) {
+      return res.status(404).json({
+        message: "ISIN not found",
+      });
+    }
+
+    // If amount is provided, calculate the units
+    if (amount) {
+      let nav = await prisma.nAV.findUnique({
+        where: {
+          isin_date: {
+            isin: isinId,
+            date: updateSellDate,
+          },
+        },
+      });
+
+      if (!nav) {
+        return res.status(500).json({
+          message:
+            "NAV not available for the sell date, please try again for a different date",
+        });
+      }
+
+      units = amount / nav.nav;
+    }
+
+    // Add the investment
+    const investment = await prisma.investments.create({
+      data: {
+        user_id: user.id,
+        isin_id: isin.id,
+        units: -units,
+        sale_date: updateSellDate,
+      },
+    });
+
+    let userInvestments = await prisma.investments.findMany({
+      where: {
+        user_id: user.id,
+        isin_id: isin.id,
+      },
+    });
+
+    let totalUnits = userInvestments.reduce((totalUnits, units) => {
+      return totalUnits + units.units;
+    }, 0);
+
+    return res.status(201).json({
+      message: "Investment sold successfully",
+      totalUnits,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+export { buyMutualFund, sellMutualFund };
