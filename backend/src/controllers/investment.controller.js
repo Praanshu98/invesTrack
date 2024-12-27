@@ -122,6 +122,16 @@ const buyMutualFund = async (req, res) => {
   }
 };
 
+/*
+
+Expected functionality:
+- Sell mutual fund with units
+- Sell mutual fund with amount
+- Accept either units or amount
+- Accept sale date of the current date or past date
+- If successfully sold, return the remaining amount of units
+*/
+
 const sellMutualFund = async (req, res) => {
   try {
     let { units } = req.body;
@@ -162,7 +172,7 @@ const sellMutualFund = async (req, res) => {
       });
     }
 
-    // Format the purchase date
+    // Format the sale date
     let updateSellDate = correctTimezoneOffset(saleDate);
 
     // Check if the user exists
@@ -203,13 +213,31 @@ const sellMutualFund = async (req, res) => {
       });
 
       if (!nav) {
-        return res.status(500).json({
+        return res.status(404).json({
           message:
             "NAV not available for the sell date, please try again for a different date",
         });
       }
 
       units = amount / nav.nav;
+    }
+
+    // Check if the user has enough units to sell
+    let userInvestments = await prisma.investments.findMany({
+      where: {
+        user_id: user.id,
+        isin_id: isin.id,
+      },
+    });
+
+    let totalUnits = userInvestments.reduce((totalUnits, units) => {
+      return totalUnits + units.units;
+    }, 0);
+
+    if (totalUnits < units) {
+      return res.status(400).json({
+        message: "You do not have enough units to sell",
+      });
     }
 
     // Add the investment
@@ -222,14 +250,14 @@ const sellMutualFund = async (req, res) => {
       },
     });
 
-    let userInvestments = await prisma.investments.findMany({
+    userInvestments = await prisma.investments.findMany({
       where: {
         user_id: user.id,
         isin_id: isin.id,
       },
     });
 
-    let totalUnits = userInvestments.reduce((totalUnits, units) => {
+    totalUnits = userInvestments.reduce((totalUnits, units) => {
       return totalUnits + units.units;
     }, 0);
 
