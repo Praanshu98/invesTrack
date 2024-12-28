@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 const CustomButton = ({ customValue, customType, className, ...props }) => {
   return (
     <button
@@ -9,11 +8,6 @@ const CustomButton = ({ customValue, customType, className, ...props }) => {
       {customValue}
     </button>
   );
-};
-
-CustomButton.propTypes = {
-  customValue: PropTypes.string,
-  customType: PropTypes.string,
 };
 
 export default CustomButton;
