@@ -27,10 +27,10 @@ const updateNAV = async (schemeObject) => {
       throw new Error("ISIN does not exist");
     }
 
-    const nav = schemeObject["Net Asset Value"] || null;
+    const nav = parseFloat(schemeObject["Net Asset Value"]) || null;
     let date = schemeObject["Date"] || null;
-    const repurchasePrice = schemeObject["Repurchase Price"] || 0;
-    const salePrice = schemeObject["Sale Price"] || 0;
+    const repurchasePrice = parseFloat(schemeObject["Repurchase Price"]) || 0;
+    const salePrice = parseFloat(schemeObject["Sale Price"]) || 0;
 
     // If either nav, or date is not present throw error
     if (!nav || !date) {
@@ -42,26 +42,48 @@ const updateNAV = async (schemeObject) => {
 
     // If ISIN of payout is present, update the NAV
     if (isinPayout) {
-      const isinPayoutNAV = await prisma.NAV.create({
-        data: {
-          isin: isinPayout,
-          nav: Number(nav),
-          date: date,
+      const isinPayoutNAV = await prisma.NAV.upsert({
+        where: {
+          isin_date: {
+            isin: isinPayout,
+            date: date,
+          },
+        },
+        update: {
+          nav: nav,
           repurchase_price: repurchasePrice,
           sale_price: salePrice,
+        },
+        create: {
+          isin: isinPayout,
+          nav: nav,
+          repurchase_price: repurchasePrice,
+          sale_price: salePrice,
+          date: date,
         },
       });
     }
 
     // If ISIN of reinvest is present, update the NAV
     if (isinReinvest) {
-      const isinReinvestNAV = await prisma.NAV.create({
-        data: {
-          isin: isinReinvest,
-          nav: Number(nav),
-          date: date,
+      const isinReinvestNAV = await prisma.NAV.upsert({
+        where: {
+          isin_date: {
+            isin: isinReinvest,
+            date: date,
+          },
+        },
+        update: {
+          nav: nav,
           repurchase_price: repurchasePrice,
           sale_price: salePrice,
+        },
+        create: {
+          isin: isinReinvest,
+          nav: nav,
+          repurchase_price: repurchasePrice,
+          sale_price: salePrice,
+          date: date,
         },
       });
     }
