@@ -65,20 +65,6 @@ const updateLatestNAV = async (req, res) => {
       [day, month, year] = parseWeekDayDate();
     }
 
-    // Checking if today's nav is already updated
-    const todayNAVExist = await prisma.NAV.findMany({
-      where: {
-        date: correctTimezoneOffset(new Date([year, month, day])),
-      },
-    });
-
-    if (todayNAVExist.length > 0) {
-      return res.status(200).json({
-        message: "Latest NAV are already updated",
-        todayNAVExist,
-      });
-    }
-
     // Checking if latest mutual fund data is fetched or not.
 
     if (!fs.existsSync(`temp/${day}_${month}_${year}.csv`)) {
