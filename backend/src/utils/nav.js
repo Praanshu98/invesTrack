@@ -27,13 +27,17 @@ const updateNAV = async (schemeObject) => {
       throw new Error("ISIN does not exist");
     }
 
-    const nav = parseFloat(schemeObject["Net Asset Value"]) || null;
+    // NAV can be zero or greater but not null or empty string
+    const nav =
+      parseFloat(schemeObject["Net Asset Value"]) >= 0
+        ? parseFloat(schemeObject["Net Asset Value"])
+        : null;
     let date = schemeObject["Date"] || null;
     const repurchasePrice = parseFloat(schemeObject["Repurchase Price"]) || 0;
     const salePrice = parseFloat(schemeObject["Sale Price"]) || 0;
 
     // If either nav, or date is not present throw error
-    if (!nav || !date) {
+    if (nav === null || date === null) {
       throw new Error("NAV or Date not present");
     }
 
@@ -90,6 +94,7 @@ const updateNAV = async (schemeObject) => {
 
     return;
   } catch (error) {
+    console.error("Error while Inserting/Updating NAV ==> \n", error);
     throw new Error(error);
   }
 };
