@@ -38,7 +38,37 @@ const updateNAV = async (schemeObject) => {
 
     // If either nav, or date is not present throw error
     if (nav === null || date === null) {
-      throw new Error("NAV or Date not present");
+      await prisma.error_nav_entries.upsert({
+        where: {
+          isin_payout_isin_reinvest_date: {
+            isin_payout: isinPayout,
+            isin_reinvest: isinReinvest,
+            date: date,
+          },
+        },
+        update: {
+          scheme_code: schemeObject["Scheme Code"],
+          scheme_name: schemeObject["Scheme Name"],
+          isin_payout: isinPayout,
+          isin_reinvest: isinReinvest,
+          nav: schemeObject["Net Asset Value"],
+          repurchase_price: schemeObject["Repurchase Price"],
+          sale_price: schemeObject["Sale Price"],
+          date: date,
+        },
+        create: {
+          scheme_code: schemeObject["Scheme Code"],
+          scheme_name: schemeObject["Scheme Name"],
+          isin_payout: isinPayout,
+          isin_reinvest: isinReinvest,
+          nav: schemeObject["Net Asset Value"],
+          repurchase_price: schemeObject["Repurchase Price"],
+          sale_price: schemeObject["Sale Price"],
+          date: date,
+        },
+      });
+      console.log("Skipping ==> ", schemeObject);
+      return;
     }
 
     // Parse date to a valid format
@@ -59,11 +89,15 @@ const updateNAV = async (schemeObject) => {
           sale_price: salePrice,
         },
         create: {
-          isin: isinPayout,
           nav: nav,
           repurchase_price: repurchasePrice,
           sale_price: salePrice,
           date: date,
+          isin_id: {
+            connect: {
+              isin: isinPayout,
+            },
+          },
         },
       });
     }
@@ -83,11 +117,15 @@ const updateNAV = async (schemeObject) => {
           sale_price: salePrice,
         },
         create: {
-          isin: isinReinvest,
           nav: nav,
           repurchase_price: repurchasePrice,
           sale_price: salePrice,
           date: date,
+          isin_id: {
+            connect: {
+              isin: isinReinvest,
+            },
+          },
         },
       });
     }

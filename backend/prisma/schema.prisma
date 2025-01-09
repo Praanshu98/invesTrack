@@ -82,6 +82,22 @@ model date_scrapped {
   updatedAt DateTime @default(now()) @updatedAt
 }
 
+model error_nav_entries {
+  id               Int      @id @default(autoincrement())
+  scheme_code      String
+  scheme_name      String
+  isin_payout      String
+  isin_reinvest    String
+  nav              String
+  repurchase_price String
+  sale_price       String
+  date             String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @default(now()) @updatedAt
+
+  @@unique([isin_payout, isin_reinvest, date])
+}
+
 model Investments {
   id            Int       @id @default(autoincrement())
   user_id       Int
