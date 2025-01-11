@@ -1,8 +1,15 @@
+import { useUserContext } from "../context/userContext";
+import { Navigate } from "react-router-dom";
+import { useLocation } from "react-router";
+
 const Home = () => {
-  return (
-    <div>
-      <h1>Home Page</h1>
-    </div>
+  const { user } = useUserContext();
+  const location = useLocation();
+
+  return user ? (
+    <Navigate to="/dashboard" replace state={{ from: location }} />
+  ) : (
+    <h1> Home </h1>
   );
 };
 

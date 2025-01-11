@@ -5,12 +5,16 @@ const userContext = createContext();
 const UserProvider = ({ children }) => {
   const [user, setUser] = useState();
 
+  localStorage.getItem("user") && !user
+    ? setUser(JSON.parse(localStorage.getItem("user")))
+    : "";
+
   const useSetUser = (newUser) => {
     if (newUser) {
       setUser({ ...newUser });
       localStorage.setItem("user", JSON.stringify(newUser));
     } else {
-      setUser(null);
+      setUser();
       localStorage.removeItem("user");
     }
   };
