@@ -240,7 +240,7 @@ const sellMutualFund = async (req, res) => {
       });
     }
 
-    // Add the investment
+    // Sell the investment
     const investment = await prisma.investments.create({
       data: {
         user_id: user.id,
@@ -280,7 +280,7 @@ Expected functionality:
 */
 
 const getAllInvestment = async (req, res) => {
-  const { userId } = req.body;
+  const { userId } = req.query;
 
   // Check if all required fields are provided
   if (!userId) {
@@ -292,7 +292,7 @@ const getAllInvestment = async (req, res) => {
   // Check if the user exists
   const user = await prisma.user.findUnique({
     where: {
-      id: userId,
+      id: parseInt(userId),
     },
   });
 
@@ -306,7 +306,7 @@ const getAllInvestment = async (req, res) => {
   const investments = await prisma.investments.groupBy({
     by: ["isin_id"],
     where: {
-      user_id: userId,
+      user_id: parseInt(userId),
     },
     _sum: {
       units: true,
