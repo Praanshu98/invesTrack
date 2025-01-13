@@ -4,7 +4,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        "text-default": "#caf0f8",
+        "pale-turquoise ": "#caf0f8",
+        "very-soft-cyan": "#86ddef",
         "rich-black-300": "#001A2C",
         "rich-black-500": "#001523",
         "rich-black-700": "#00111C",
@@ -16,6 +17,9 @@ export default {
         "purssian-blue-700": "#00253E",
         "purssian-blue-800": "#002137",
         "dark-washed-azure": "#0073e6",
+      },
+      spacing: {
+        150: "900px",
       },
     },
   },
