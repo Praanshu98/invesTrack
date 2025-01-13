@@ -140,9 +140,7 @@ const getAllMutualFunds = async (req, res) => {
 
     console.log(mutualFundList);
 
-    res.status(200).json({
-      ...mutualFundList,
-    });
+    res.status(200).json(mutualFundList);
   } catch (error) {
     res.status(500).json({
       error: error,
