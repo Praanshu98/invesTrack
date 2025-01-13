@@ -129,4 +129,25 @@ const updateLatestNAV = async (req, res) => {
   }
 };
 
-export { updateMutualFundsList, updateLatestNAV };
+const getAllMutualFunds = async (req, res) => {
+  try {
+    const mutualFundList = await prisma.iSIN.findMany({
+      select: {
+        isin: true,
+        name: true,
+      },
+    });
+
+    console.log(mutualFundList);
+
+    res.status(200).json({
+      ...mutualFundList,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: error,
+    });
+  }
+};
+
+export { updateMutualFundsList, updateLatestNAV, getAllMutualFunds };
