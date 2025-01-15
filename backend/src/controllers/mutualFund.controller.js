@@ -146,4 +146,48 @@ const getAllMutualFunds = async (req, res) => {
   }
 };
 
-export { updateMutualFundsList, updateLatestNAV, getAllMutualFunds };
+const getMutualFundNAVs = async (req, res) => {
+  // Function requires mandoatory field ISIN id.
+  //
+  // Execution:
+  // 1. Check if ISIN id is provided else return error.
+  // 2. Check if ISIN id is correct, else return error.
+  // 3. Fetch NAVs from table from date till today.
+
+  try {
+    const { isinId } = req.body;
+
+    if (!isinId) {
+      throw new Error("ISIN id is required.");
+    }
+
+    const isinCheck = await prisma.iSIN.findUnique({
+      where: {
+        isin: isinId,
+      },
+    });
+
+    if (!isinCheck) {
+      throw new Error("Invalid ISIN id provided");
+    }
+
+    const navList = await prisma.nAV.findMany({
+      where: {
+        isin: isinId,
+      },
+    });
+
+    res.status(200).json({ navs: navList });
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+};
+
+export {
+  updateMutualFundsList,
+  updateLatestNAV,
+  getAllMutualFunds,
+  getMutualFundNAVs,
+};
