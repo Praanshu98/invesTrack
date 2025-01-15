@@ -155,7 +155,7 @@ const getMutualFundNAVs = async (req, res) => {
   // 3. Fetch NAVs from table from date till today.
 
   try {
-    const { isinId } = req.body;
+    const { isinId } = req.query;
 
     if (!isinId) {
       throw new Error("ISIN id is required.");
