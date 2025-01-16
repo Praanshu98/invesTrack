@@ -175,6 +175,9 @@ const getMutualFundNAVs = async (req, res) => {
       where: {
         isin: isinId,
       },
+      orderBy: {
+        date: "asc",
+      },
     });
 
     res.status(200).json({ navs: navList });
