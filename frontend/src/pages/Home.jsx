@@ -12,21 +12,30 @@ const Home = () => {
   const { user } = useUserContext();
   const location = useLocation();
   const [navs, setNavs] = useState([]);
+  const [selectedMutualFund, setSelectedMutualFund] = useState(null);
 
   useEffect(() => {
-    async function getData() {
-      const fetchData = await getListOfAllNAVsOfMutualFund("INF179KC1BV9");
+    async function getData(isin) {
+      const fetchData = await getListOfAllNAVsOfMutualFund(isin);
       setNavs(fetchData.navs);
     }
-    getData();
-  }, []);
+    if (selectedMutualFund) getData(selectedMutualFund.isin);
+  }, [selectedMutualFund]);
 
   return user ? (
     <Navigate to="/dashboard" replace state={{ from: location }} />
   ) : (
-    <div className="mt-52 flex h-screen flex-col items-center">
-      <SearchBar />
-      <NAVChart navs={navs} classNames={"mt-24"} />
+    <div className="mt-24 flex h-screen flex-col items-center">
+      <SearchBar setSelectedMutualFund={setSelectedMutualFund} />
+      {selectedMutualFund ? (
+        <NAVChart
+          selectedMutualFund={selectedMutualFund}
+          navs={navs}
+          classNames={"mt-24"}
+        />
+      ) : (
+        ""
+      )}
     </div>
   );
 };

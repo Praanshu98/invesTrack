@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import getListOfAllMutualFunds from "../utils/listAllMutualfunds";
 
-const SearchBar = () => {
+const SearchBar = ({ setSelectedMutualFund }) => {
   const [mutualFundList, setMutualFundList] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [filteredMutualFunds, setfilteredMutualFunds] = useState([]);
 
   useEffect(() => {
     async function getAllMutualFunds() {
@@ -14,12 +15,16 @@ const SearchBar = () => {
     getAllMutualFunds();
   }, []);
 
-  const filteredMutualFunds = mutualFundList.filter((mutualFund) => {
+  const filteredList = mutualFundList.filter((mutualFund) => {
     return (
       searchTerm.length > 2 &&
       mutualFund.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
+
+  useEffect(() => {
+    setfilteredMutualFunds(filteredList);
+  }, [searchTerm]);
 
   return (
     <div className="w-3/4 md:w-4/5">
@@ -31,12 +36,21 @@ const SearchBar = () => {
         onChange={(event) => {
           setSearchTerm(event.target.value);
         }}
+        value={searchTerm}
       />
       {/* Search Result */}
       {filteredMutualFunds.length !== 0 ? (
         <ul className="max-h-52 overflow-y-auto rounded-b-xl bg-purssian-blue-200 py-2 text-lg font-light text-slate-100">
           {filteredMutualFunds.map((mutualFund) => (
-            <li key={mutualFund.isin} className="mx-5 truncate py-1">
+            <li
+              key={mutualFund.isin}
+              className="mx-5 truncate py-1"
+              onClick={() => {
+                setSearchTerm("");
+                setfilteredMutualFunds([]);
+                setSelectedMutualFund(mutualFund);
+              }}
+            >
               {mutualFund.name}
             </li>
           ))}

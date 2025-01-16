@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 
 import formatDate from "../utils/formatDate";
 
-const NAVChart = ({ navs, classNames }) => {
+const NAVChart = ({ selectedMutualFund, navs, classNames }) => {
   const chartRef = useRef(null);
 
   useEffect(() => {
@@ -43,9 +43,14 @@ const NAVChart = ({ navs, classNames }) => {
               stacked: true,
               ticks: {
                 callback: function (value) {
-                  const { day, month, year } = formatDate(navs[value].date);
+                  const { month, year } = formatDate(navs[value].date);
+                  if (value == 0) {
+                    return `${year} - ${month}`;
+                  }
 
-                  return `${day} - ${month} - ${year}`;
+                  if (month != formatDate(navs[value - 1].date).month) {
+                    return month == "Jan" ? `${year} - ${month}` : `${month}`;
+                  }
                 },
               },
             },
@@ -78,9 +83,11 @@ const NAVChart = ({ navs, classNames }) => {
 
   return (
     <div className={`w-3/4 md:w-4/5 ${classNames} `}>
-      <h2> Mutual Fund Name </h2>
+      <h2 className="mb-5 flex justify-center text-xl md:text-3xl">
+        {selectedMutualFund.name}
+      </h2>
       <div>
-        <canvas className="w-full" id="mutual-fund-navs"></canvas>
+        <canvas id="mutual-fund-navs"></canvas>
       </div>
     </div>
   );
