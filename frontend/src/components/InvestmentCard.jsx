@@ -1,9 +1,4 @@
 const InvestmentCard = ({ name, units, nav, value, classNames }) => {
-  name = "HDFC Nifty 50 Index Fund - Direct Plan - Growth Plan";
-  units = 123000;
-  nav = 10;
-  value = 11000000;
-
   function formatValue(value, currency = false) {
     let postfix = null;
     if (value / 10000000 >= 1) {
