@@ -333,6 +333,7 @@ const getAllInvestment = async (req, res) => {
     });
 
     userInvestments.push({
+      isin_id: investment.isin_id,
       name: latestNAV[0].isin_id.name,
       units: Math.round(investment._sum.units),
       nav: Math.round(latestNAV[0].nav),
@@ -340,9 +341,7 @@ const getAllInvestment = async (req, res) => {
     });
   }
 
-  return res.status(200).json({
-    userInvestments,
-  });
+  return res.status(200).json(userInvestments);
 };
 
 export { buyMutualFund, sellMutualFund, getAllInvestment };
