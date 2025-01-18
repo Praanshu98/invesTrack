@@ -1,5 +1,5 @@
 import CustomButton from "../components/customButtons";
-import CustomTextInput from "../components/customTextInput";
+import CustomInput from "../components/customInput";
 import { useUserContext } from "../context/userContext";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -13,20 +13,20 @@ const SignUpComponent = () => {
 
   return (
     <div className="flex flex-col items-center">
-      <h1 className="text-2xl font-bold m-2 p-1 mt-6">Sign Up</h1>
+      <h1 className="m-2 mt-6 p-1 text-2xl font-bold">Sign Up</h1>
       <form
-        className="flex flex-col w-64"
+        className="flex w-64 flex-col"
         action="/api/v1/users/register"
         onSubmit={(event) =>
           validateAndSignUp(event, setUser, navigate, setError)
         }
         method="POST"
       >
-        <CustomTextInput placeholderText="First Name" id="firstName" />
-        <CustomTextInput placeholderText="Last Name" id="lastName" />
-        <CustomTextInput placeholderText="Email" inputType="email" id="email" />
+        <CustomInput placeholderText="First Name" id="firstName" />
+        <CustomInput placeholderText="Last Name" id="lastName" />
+        <CustomInput placeholderText="Email" inputType="email" id="email" />
         <div className="flex flex-col">
-          <CustomTextInput
+          <CustomInput
             placeholderText="Password"
             inputType="password"
             id="password"
@@ -40,12 +40,12 @@ const SignUpComponent = () => {
         </div>
         <CustomButton customValue="Sign Up" customType="submit" />
       </form>
-      <div className="flex text-sm items-center">
+      <div className="flex items-center text-sm">
         <p className="text-xs">Already have an account?</p>
         <CustomButton
           customValue="Log in"
           onClick={() => navigate("/login")}
-          className="!m-0 !p-0 !border-0 !pl-2 bg-transparent underline text-blue-400 text-sm font-bold"
+          className="!m-0 !border-0 bg-transparent !p-0 !pl-2 text-sm font-bold text-blue-400 underline"
         />
       </div>
     </div>

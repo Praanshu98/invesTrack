@@ -1,4 +1,4 @@
-const customTextInput = ({
+const customInput = ({
   placeholderText,
   inputType,
   classNameText,
@@ -9,7 +9,7 @@ const customTextInput = ({
       type={inputType || "text"}
       placeholder={placeholderText || "placeholder text"}
       className={
-        "m-2 rounded-lg p-2 placeholder-slate-500 border-2 bg-purssian-blue-800 border-purssian-blue-200  min-w-40 focus:border-red-500 focus:outline-none focus:ring-0 " +
+        "m-2 min-w-40 rounded-lg border-2 border-purssian-blue-200 bg-purssian-blue-800 p-2 placeholder-slate-500 focus:border-red-500 focus:outline-none focus:ring-0 " +
         classNameText
       }
       {...props}
@@ -17,4 +17,4 @@ const customTextInput = ({
   );
 };
 
-export default customTextInput;
+export default customInput;
