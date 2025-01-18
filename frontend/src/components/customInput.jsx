@@ -1,4 +1,4 @@
-const customInput = ({
+const CustomInput = ({
   placeholderText,
   inputType,
   classNameText,
@@ -17,4 +17,4 @@ const customInput = ({
   );
 };
 
-export default customInput;
+export default CustomInput;
