@@ -1,3 +1,7 @@
 export default function Sell() {
-  return <h1> Sell Investment </h1>;
+  return (
+    <div className="flex h-screen items-center justify-center text-7xl">
+      <h1> Sell page coming soon. </h1>
+    </div>
+  );
 }

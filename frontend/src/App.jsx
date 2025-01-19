@@ -8,7 +8,7 @@ import Dashboard from "./pages/Dashboard.jsx";
 import Login from "./pages/Login.jsx";
 import Logout from "./pages/Logout.jsx";
 import Buy from "./pages/Buy.jsx";
-import Sell from "./pages/sell.jsx";
+import Sell from "./pages/Sell.jsx";
 
 import UserProvider from "./context/userContext.jsx";
 import ProtectedRoutes from "./components/ProtectedRoutes.jsx";
