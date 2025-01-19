@@ -1,6 +1,9 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import cron from "node-cron";
+
+import fetchLatestNAV from "./utils/fetchLatestNAV.js";
 
 // Server initialization
 const app = express();
@@ -26,5 +29,7 @@ import investmentRoutes from "./routes/investment.routes.js";
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/users/investment", investmentRoutes);
 app.use("/api/v1/mutualfund", mutualFundRoutes);
+
+cron.schedule("0 5 0 * * 2-6", fetchLatestNAV);
 
 export default app;
