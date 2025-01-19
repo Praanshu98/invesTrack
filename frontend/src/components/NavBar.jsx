@@ -5,14 +5,20 @@ const NavBar = () => {
   const { user } = useUserContext();
 
   return (
-    <nav className="border-b-2 border-purssian-blue-200 mb-4">
-      <ul className="flex m-2 md:gap-10 mt-8 mr-8 justify-between">
+    <nav className="mb-4 border-b-2 border-purssian-blue-200">
+      <ul className="m-2 mr-8 mt-8 flex justify-between md:gap-10">
         <div>
           {/* If use is logged in show dashboard else show the landing page. */}
           {user ? (
             <div className="flex gap-4">
               <li>
                 <Link to="/dashboard"> Dashboard </Link>
+              </li>
+              <li>
+                <Link to="/buy"> Buy </Link>
+              </li>
+              <li>
+                <Link to="/sell"> Sell </Link>
               </li>
             </div>
           ) : (
