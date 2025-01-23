@@ -19,6 +19,14 @@ export default async function addUserInvestment(
   });
   const data = await response.json();
   console.log(data);
+  let error = false;
+  if (response.status >= 400) {
+    error = true;
+  }
+
   if (data.totalUnits) navigate("/dashboard");
-  return data;
+  return {
+    ...data,
+    error: error,
+  };
 }

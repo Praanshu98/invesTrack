@@ -33,13 +33,25 @@ export default function Buy() {
   useEffect(() => {
     if (!amount || !addInvestment) return;
 
-    const response = addUserInvestment(
-      user.id,
-      addInvestment.isin,
-      addInvestment.amount,
-      date,
-      navigate,
-    );
+    async function buy() {
+      const response = await addUserInvestment(
+        user.id,
+        addInvestment.isin,
+        addInvestment.amount,
+        date,
+        navigate,
+      );
+
+      console.log(response);
+
+      if (response.error) {
+        console.log("error");
+        alert(response.message);
+        window.location.reload();
+      }
+    }
+
+    buy();
   }, [addInvestment]);
 
   return (
