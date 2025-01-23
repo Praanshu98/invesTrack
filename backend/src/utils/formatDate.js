@@ -1,3 +1,15 @@
+// Function to split date in day, month, year
+const getDayMonthYear = (date) => {
+  return Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "2-digit",
+  })
+    .format(date)
+    .replace(",", "")
+    .split(" ");
+};
+
 // Function to parse the date and return the latest date for which NAV could be fetched
 const parseWeekDayDate = (date = new Date()) => {
   try {
@@ -18,14 +30,7 @@ const parseWeekDayDate = (date = new Date()) => {
     // Adjust time offset to UTC
     date.setTime(correctTimezoneOffset(date));
 
-    const [month, day, year] = Intl.DateTimeFormat("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "2-digit",
-    })
-      .format(date)
-      .replace(",", "")
-      .split(" ");
+    const [month, day, year] = getDayMonthYear(date);
 
     return [day, month, year];
   } catch (error) {
@@ -41,4 +46,4 @@ const correctTimezoneOffset = (date) => {
   return date;
 };
 
-export { parseWeekDayDate, correctTimezoneOffset };
+export { parseWeekDayDate, correctTimezoneOffset, getDayMonthYear };

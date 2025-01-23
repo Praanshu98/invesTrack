@@ -1,6 +1,6 @@
 import "../db_connect.js";
 import prisma from "../db_connect.js";
-import { correctTimezoneOffset } from "../utils/formatDate.js";
+import { correctTimezoneOffset, getDayMonthYear } from "../utils/formatDate.js";
 
 const buyMutualFund = async (req, res) => {
   try {
@@ -191,9 +191,11 @@ const sellMutualFund = async (req, res) => {
     // Check if the isin exists
     const isin = await prisma.iSIN.findUnique({
       where: {
-        isin: isinId,
+        id: isinId,
       },
     });
+
+    console.log("new isin => ", isin);
 
     if (!isin) {
       return res.status(404).json({
@@ -201,16 +203,49 @@ const sellMutualFund = async (req, res) => {
       });
     }
 
+    // Check if date is same or in future of the first investment of the mutual fund.
+    let userInvestments = await prisma.investments.findMany({
+      where: {
+        user_id: user.id,
+        isin_id: isin.id,
+      },
+      orderBy: {
+        purchase_date: "asc",
+      },
+      include: {
+        isin: true,
+      },
+    });
+
+    console.log("user Investment from backend => ", userInvestments);
+
+    const firstInvestmentDate = userInvestments[0].purchase_date;
+
+    console.log({
+      firstInvestmentDate,
+      updateSellDate,
+    });
+
+    if (firstInvestmentDate >= updateSellDate) {
+      return res.status(400).json({
+        message: "Sale date can not be less than purchase date",
+      });
+    }
+
+    console.log(userInvestments[0].isin.isin);
+
     // If amount is provided, calculate the units
     if (amount) {
       let nav = await prisma.nAV.findUnique({
         where: {
           isin_date: {
-            isin: isinId,
+            isin: userInvestments[0].isin.isin,
             date: updateSellDate,
           },
         },
       });
+
+      console.log("Amount => ", nav);
 
       if (!nav) {
         return res.status(404).json({
@@ -221,14 +256,6 @@ const sellMutualFund = async (req, res) => {
 
       units = amount / nav.nav;
     }
-
-    // Check if the user has enough units to sell
-    let userInvestments = await prisma.investments.findMany({
-      where: {
-        user_id: user.id,
-        isin_id: isin.id,
-      },
-    });
 
     let totalUnits = userInvestments.reduce((totalUnits, units) => {
       return totalUnits + units.units;
