@@ -1,9 +1,16 @@
 import Chart from "chart.js/auto";
 import { useEffect, useRef } from "react";
 
+import CustomButton from "./customButtons";
+
 import formatDate from "../utils/formatDate";
 
-const NAVChart = ({ selectedMutualFund, navs, classNames }) => {
+const NAVChart = ({
+  selectedMutualFund,
+  navs,
+  classNames,
+  setTimeDuration,
+}) => {
   const chartRef = useRef(null);
 
   useEffect(() => {
@@ -43,7 +50,10 @@ const NAVChart = ({ selectedMutualFund, navs, classNames }) => {
               stacked: true,
               ticks: {
                 callback: function (value) {
-                  const { month, year } = formatDate(navs[value].date);
+                  const { day, month, year } = formatDate(navs[value].date);
+                  if (navs.length < 100) {
+                    return Object.values({ day, month, year }).join("-");
+                  }
                   if (value == 0) {
                     return `${year} - ${month}`;
                   }
@@ -88,6 +98,32 @@ const NAVChart = ({ selectedMutualFund, navs, classNames }) => {
       </h2>
       <div>
         <canvas id="mutual-fund-navs"></canvas>
+      </div>
+      <div className="mt-4 flex flex-wrap justify-between">
+        <CustomButton
+          customValue={"1 Week"}
+          onClick={() => setTimeDuration({ week: 1, month: "", year: "" })}
+        />
+        <CustomButton
+          customValue={"1 Month"}
+          onClick={() => setTimeDuration({ week: "", month: 1, year: "" })}
+        />
+        <CustomButton
+          customValue={"6 Month"}
+          onClick={() => setTimeDuration({ week: "", month: 6, year: "" })}
+        />
+        <CustomButton
+          customValue={"1 Year"}
+          onClick={() => setTimeDuration({ week: "", month: "", year: 1 })}
+        />
+        <CustomButton
+          customValue={"3 Year"}
+          onClick={() => setTimeDuration({ week: "", month: "", year: 3 })}
+        />
+        <CustomButton
+          customValue={"All"}
+          onClick={() => setTimeDuration({ week: "", month: "", year: 50 })}
+        />
       </div>
     </div>
   );

@@ -13,14 +13,25 @@ const Home = () => {
   const location = useLocation();
   const [navs, setNavs] = useState([]);
   const [selectedMutualFund, setSelectedMutualFund] = useState(null);
+  const [timeDuration, setTimeDuration] = useState({
+    week: "",
+    month: "",
+    year: "",
+  });
 
   useEffect(() => {
-    async function getData(isin) {
-      const fetchData = await getListOfAllNAVsOfMutualFund(isin);
+    async function getData(isin, timeDuration) {
+      const { week, month, year } = timeDuration;
+      const fetchData = await getListOfAllNAVsOfMutualFund(
+        isin,
+        week,
+        month,
+        year,
+      );
       setNavs(fetchData.navs);
     }
-    if (selectedMutualFund) getData(selectedMutualFund.isin);
-  }, [selectedMutualFund]);
+    if (selectedMutualFund) getData(selectedMutualFund.isin, timeDuration);
+  }, [selectedMutualFund, timeDuration]);
 
   return user ? (
     <Navigate to="/dashboard" replace state={{ from: location }} />
@@ -32,6 +43,7 @@ const Home = () => {
           selectedMutualFund={selectedMutualFund}
           navs={navs}
           classNames={"mt-24"}
+          setTimeDuration={setTimeDuration}
         />
       ) : (
         ""

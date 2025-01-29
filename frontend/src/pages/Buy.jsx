@@ -19,15 +19,26 @@ export default function Buy() {
   const [date, setDate] = useState(null);
   const [amount, setAmount] = useState(0);
   const navigate = useNavigate();
+  const [timeDuration, setTimeDuration] = useState({
+    week: "",
+    month: "",
+    year: "",
+  });
 
   // Get all navs for selected mutual fund.
   useEffect(() => {
-    async function getData(isin) {
-      const fetchData = await getListOfAllNAVsOfMutualFund(isin);
+    async function getData(isin, timeDuration) {
+      const { week, month, year } = timeDuration;
+      const fetchData = await getListOfAllNAVsOfMutualFund(
+        isin,
+        week,
+        month,
+        year,
+      );
       setNavs(fetchData.navs);
     }
-    if (selectedMutualFund) getData(selectedMutualFund.isin);
-  }, [selectedMutualFund]);
+    if (selectedMutualFund) getData(selectedMutualFund.isin, timeDuration);
+  }, [selectedMutualFund, timeDuration]);
 
   // Add new Investment
   useEffect(() => {
@@ -41,8 +52,6 @@ export default function Buy() {
         date,
         navigate,
       );
-
-      console.log(response);
 
       if (response.error) {
         console.log("error");
@@ -101,6 +110,7 @@ export default function Buy() {
             selectedMutualFund={selectedMutualFund}
             navs={navs}
             classNames={"mt-24"}
+            setTimeDuration={setTimeDuration}
           />
         </div>
       )}
