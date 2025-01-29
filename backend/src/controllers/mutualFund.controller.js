@@ -155,7 +155,14 @@ const getMutualFundNAVs = async (req, res) => {
   // 3. Fetch NAVs from table from date till today.
 
   try {
-    const { isinId } = req.query;
+    const {
+      isinId,
+      week: deltaWeek,
+      month: deltaMonth,
+      year: deltaYear,
+    } = req.query;
+
+    console.log({ deltaWeek, deltaMonth, deltaYear });
 
     if (!isinId) {
       throw new Error("ISIN id is required.");
@@ -171,9 +178,39 @@ const getMutualFundNAVs = async (req, res) => {
       throw new Error("Invalid ISIN id provided");
     }
 
+    const today = new Date();
+    let deltaDate;
+
+    if (deltaWeek) {
+      deltaDate = new Date(today.setDate(today.getDate() - 7));
+    }
+
+    if (deltaMonth) {
+      deltaDate = new Date(
+        today.setMonth(today.getMonth() - parseInt(deltaMonth)),
+      );
+    }
+
+    if (deltaYear) {
+      deltaDate = new Date(
+        today.setFullYear(today.getFullYear() - parseInt(deltaYear)),
+      );
+    }
+
+    if (!deltaYear && !deltaMonth && !deltaWeek) {
+      deltaDate = new Date(today.setDate(today.getDate() - 7));
+    }
+
     const navList = await prisma.nAV.findMany({
       where: {
-        isin: isinId,
+        AND: [
+          { isin: isinId },
+          {
+            date: {
+              gte: new Date(deltaDate),
+            },
+          },
+        ],
       },
       orderBy: {
         date: "asc",
