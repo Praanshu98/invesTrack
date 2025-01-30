@@ -34,11 +34,19 @@ const NAVChart = ({
           elements: {
             line: {
               fill: true,
-              borderWidth: 1,
+              borderWidth: 0,
+              backgroundColor: "#00406C",
             },
             point: {
-              pointStyle: false,
+              pointStyle: true,
+              radius: 0,
+              hoverRadius: 5,
+              backgroundColor: "green",
             },
+          },
+          interaction: {
+            intersect: false,
+            mode: "index",
           },
           plugins: {
             legend: {
