@@ -13,8 +13,7 @@ import formatDate from "../utils/formatDate";
 export default function Sell() {
   const { user } = useUserContext();
   const [userInvestments, setUserInvestments] = useState([]);
-  const [date, setDate] = useState(null);
-  const [amount, setAmount] = useState(0);
+  const [inputs, setInputs] = useState({});
   const [sellInvestment, setSellInvestment] = useState(null);
   const navigate = useNavigate();
 
@@ -27,14 +26,14 @@ export default function Sell() {
   }, []);
 
   useEffect(() => {
-    if (!amount || !sellInvestment) return;
+    if (!sellInvestment) return;
 
     async function sell() {
       const response = await sellUserInvestment(
         user.id,
         sellInvestment.isin,
         sellInvestment.amount,
-        date,
+        sellInvestment.date,
         navigate,
       );
 
@@ -62,39 +61,65 @@ export default function Sell() {
                   placeholderText={"Amount"}
                   inputType={"number"}
                   classNames={"text-lg onScroll w-28 mx-1"}
+                  value={
+                    (inputs[investment.isin_id] &&
+                      inputs[investment.isin_id].amount) ||
+                    ""
+                  }
                   onChange={(event) => {
-                    setAmount(event.target.value);
+                    setInputs((prev) => ({
+                      ...prev,
+                      [investment.isin_id]: {
+                        ...prev[investment.isin_id],
+                        amount: event.target.value,
+                      },
+                    }));
                   }}
-                  value={amount}
                   min={0}
                 />
                 <CustomInput
                   inputType={"date"}
+                  classNames={"text-xl w-40 mx-1"}
+                  value={
+                    (inputs[investment.isin_id] &&
+                      inputs[investment.isin_id].date) ||
+                    ""
+                  }
                   onFocus={(event) => {
                     event.target.showPicker();
                   }}
-                  classNames={"text-xl w-40 mx-1"}
                   onChange={(event) => {
-                    setDate(event.target.value);
+                    setInputs((prev) => ({
+                      ...prev,
+                      [investment.isin_id]: {
+                        ...prev[investment.isin_id],
+                        date: event.target.value,
+                      },
+                    }));
                   }}
                 />
                 <CustomButton
                   customValue={"Sell"}
                   className={"mx-1 h-12 w-16 p-3"}
                   onClick={() => {
-                    if (!amount)
+                    const investmentInputs = inputs[investment.isin_id] || {};
+                    const amount = parseInt(investmentInputs.amount);
+                    const date = investmentInputs.date;
+
+                    if (!amount || amount <= 0) {
                       return alert("Please add amount greater than 0");
+                    }
 
-                    let formatedDate = formatDate(
-                      date ||
-                        new Date().setDate(new Date(Date.now()).getDate() - 1),
+                    const formatedDate = formatDate(
+                      date || new Date().setDate(new Date().getDate() - 1),
                     );
+                    const formattedDateStr =
+                      Object.values(formatedDate).join("-");
 
-                    setDate(Object.values(formatedDate).join("-"));
                     setSellInvestment({
                       isin: investment.isin_id,
-                      date,
-                      amount: parseInt(amount),
+                      date: formattedDateStr,
+                      amount,
                     });
                   }}
                 />
