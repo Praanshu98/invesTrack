@@ -8,8 +8,10 @@ import NAVChart from "../components/NAVChart";
 
 import getListOfAllNAVsOfMutualFund from "../utils/listAllNAVs";
 
+import login from "../utils/login";
+
 const Home = () => {
-  const { user } = useUserContext();
+  const { user, setUser } = useUserContext();
   const location = useLocation();
   const [navs, setNavs] = useState([]);
   const [selectedMutualFund, setSelectedMutualFund] = useState(null);
@@ -32,6 +34,23 @@ const Home = () => {
     }
     if (selectedMutualFund) getData(selectedMutualFund.isin, timeDuration);
   }, [selectedMutualFund, timeDuration]);
+
+  useEffect(() => {
+    if (!user) {
+      login({ email: "test@user.com", password: "Abc@123" })
+        .then(async (response) => {
+          if (response.status === 200) {
+            const user = await response.json();
+            setUser(user.user);
+            localStorage.setItem("user", JSON.stringify(user.user));
+            Navigate("/dashboard");
+          }
+        })
+        .catch((error) => {
+          console.log("error => ", error);
+        });
+    }
+  }, []);
 
   return user ? (
     <Navigate to="/dashboard" replace state={{ from: location }} />
