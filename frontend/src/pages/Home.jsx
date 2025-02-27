@@ -10,6 +10,8 @@ import getListOfAllNAVsOfMutualFund from "../utils/listAllNAVs";
 
 import login from "../utils/login";
 
+let flag = false;
+
 const Home = () => {
   const { user, setUser } = useUserContext();
   const location = useLocation();
@@ -36,11 +38,13 @@ const Home = () => {
   }, [selectedMutualFund, timeDuration]);
 
   useEffect(() => {
+    if (flag) return;
     if (!user) {
       login({ email: "test@user.com", password: "Abc@123" })
         .then(async (response) => {
           if (response.status === 200) {
             const user = await response.json();
+            flag = true;
             setUser(user.user);
             localStorage.setItem("user", JSON.stringify(user.user));
             Navigate("/dashboard");
