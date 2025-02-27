@@ -8,8 +8,13 @@ import validateAndLogin from "../utils/validateAndLogin";
 
 const LoginComponent = () => {
   const [error, setError] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
   const { setUser } = useUserContext();
   const navigate = useNavigate();
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
 
   return (
     <div className="flex flex-col items-center">
@@ -26,10 +31,24 @@ const LoginComponent = () => {
         <div className="flex flex-col">
           <CustomInput
             placeholderText="Password"
-            inputType="password"
+            inputType={showPassword ? "text" : "password"}
             id="password"
             classNameText="mb-0.5"
           />
+          <div className="mr-4 flex items-center gap-2">
+            <input
+              type="checkbox"
+              className="ml-4"
+              id="show-password"
+              onChange={toggleShowPassword}
+            />
+            <label
+              htmlFor="show-password"
+              className="text-pale-turquoise text-sm"
+            >
+              Show password
+            </label>
+          </div>
           {error && (
             <p className="ml-2 pl-2 text-xs text-red-500" id="login-error">
               {error}
